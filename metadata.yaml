@@ -100,7 +100,9 @@ spec:
               version: ">= 15.2.0"
             spec:
               outputExpr: |-
-                [for subnet in subnets_list: subnet.id if subnet.purpose == "PRIVATE"][0]
+                subnets_list != null && length([for s in subnets_list: s.id if s.purpose == "PRIVATE"]) > 0 
+                ? [for s in subnets_list: s.id if s.purpose == "PRIVATE"][0] 
+                : ""
               inputPath: subnetwork
       - name: delete_swg_autogen_router_on_destroy
         description: boolean option to also delete auto generated router by the gateway creation.
