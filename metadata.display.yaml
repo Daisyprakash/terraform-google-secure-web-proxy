@@ -101,3 +101,5 @@ spec:
       outputs:
         gateway_id:
           visibility: VISIBILITY_ROOT
+        service_attachment_id:
+          visibility: VISIBILITY_ROOT
