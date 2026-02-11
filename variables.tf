@@ -84,10 +84,6 @@ variable "subnetwork" {
   type        = string
   description = "URI of the subnetwork for which this secure web proxy will be created. If empty, the module will attempt to find a suitable subnetwork from the `subnets` map."
   default     = ""
-  validation {
-    condition     = var.subnetwork != "" || (var.subnets != null && length([for _, s in var.subnets : s.id if s.region == var.region && s.purpose == "PRIVATE"]) > 0)
-    error_message = "Either 'subnetwork' must be provided, or a 'PRIVATE' subnetwork in region '${var.region}' must be present in 'subnets'."
-  }
 }
 
 variable "subnets" {

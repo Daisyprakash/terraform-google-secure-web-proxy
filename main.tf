@@ -18,8 +18,8 @@ locals {
   # Filter var.subnets to find the subnet in the specified region. We look for purpose == "PRIVATE".
   filtered_swp_subnets = var.subnets != null ? [for _, subnet in var.subnets : subnet.id if subnet.region == var.region && subnet.purpose == "PRIVATE"] : []
 
-  # Get the id of the first matching subnet. If no match, this will be null.
-  derived_swp_subnet_id = length(local.filtered_swp_subnets) > 0 ? local.filtered_swp_subnets[0] : null
+  # Get the id of the first matching subnet. If no match, this will be empty string.
+  derived_swp_subnet_id = length(local.filtered_swp_subnets) > 0 ? local.filtered_swp_subnets[0] : ""
 
   # Determine final subnetwork: prefer explicit var.subnetwork, otherwise derived id.
   final_subnetwork = var.subnetwork != "" ? var.subnetwork : local.derived_swp_subnet_id
