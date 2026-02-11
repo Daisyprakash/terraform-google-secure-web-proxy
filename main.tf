@@ -23,9 +23,6 @@ locals {
 
   # Determine final subnetwork: prefer explicit var.subnetwork, otherwise derived id.
   final_subnetwork = var.subnetwork != "" ? var.subnetwork : local.derived_swp_subnet_id
-
-  # Validate and produce an explicit error during plan/apply if no subnetwork is available.
-  validated_swp_subnet = (local.final_subnetwork != null && local.final_subnetwork != "") ? local.final_subnetwork : error("Error: Either 'subnetwork' must be explicitly provided, or a subnetwork with purpose 'PRIVATE' in region '${var.region}' must be present in the 'subnets' map.")
 }
 
 # Network Services Gateway
@@ -43,7 +40,7 @@ resource "google_network_services_gateway" "this" {
   certificate_urls                     = var.certificate_urls
   gateway_security_policy              = google_network_security_gateway_security_policy.this.id
   network                              = var.network
-  subnetwork                           = local.validated_swp_subnet
+  subnetwork                           = local.final_subnetwork
   delete_swg_autogen_router_on_destroy = var.delete_swg_autogen_router_on_destroy
 }
 
