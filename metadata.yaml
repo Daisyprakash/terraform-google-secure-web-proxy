@@ -94,16 +94,6 @@ spec:
         description: URI of the subnetwork for which this secure web proxy will be created.
         varType: string
         required: true
-        connections:
-          - source:
-              source: github.com/Daisyprakash/terraform-google-network
-              version: ">= 15.2.0"
-            spec:
-              outputExpr: |-
-                subnets_list != null && length([for s in subnets_list: s.id if s.purpose == "PRIVATE"]) > 0 
-                ? [for s in subnets_list: s.id if s.purpose == "PRIVATE"][0] 
-                : ""
-              inputPath: subnetwork
       - name: delete_swg_autogen_router_on_destroy
         description: boolean option to also delete auto generated router by the gateway creation.
         varType: bool
