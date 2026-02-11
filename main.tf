@@ -14,33 +14,31 @@
  * limitations under the License.
  */
 
-locals {
-  # Filter var.subnets to find the subnet in the specified region. We look for purpose == "PRIVATE".
-  filtered_swp_subnets = var.subnets != null ? [for _, subnet in var.subnets : subnet.id if subnet.region == var.region && subnet.purpose == "PRIVATE"] : []
-
-  # Get the id of the first matching subnet. If no match, this will be empty string.
-  derived_swp_subnet_id = length(local.filtered_swp_subnets) > 0 ? local.filtered_swp_subnets[0] : ""
-
-  # Determine final subnetwork: prefer explicit var.subnetwork, otherwise derived id.
-  final_subnetwork = var.subnetwork != "" ? var.subnetwork : local.derived_swp_subnet_id
-}
-
 # Network Services Gateway
 resource "google_network_services_gateway" "this" {
-  name                                 = var.gateway_name
-  project                              = var.project_id
-  description                          = var.description
-  location                             = var.region
-  addresses                            = var.ip_address != "" ? [var.ip_address] : null # Only supports 0 or 1 IP address.
-  type                                 = "SECURE_WEB_GATEWAY"
-  labels                               = var.labels
-  ports                                = [443] # Gateways of type 'SECURE_WEB_GATEWAY' are limited to 1 port.
-  routing_mode                         = var.next_hop_routing_mode ? "NEXT_HOP_ROUTING_MODE" : null
-  scope                                = var.scope != "" ? var.scope : var.region
-  certificate_urls                     = var.certificate_urls
-  gateway_security_policy              = google_network_security_gateway_security_policy.this.id
-  network                              = var.network
-  subnetwork                           = local.final_subnetwork
+  name                    = var.gateway_name
+  project                 = var.project_id
+  description             = var.description
+  location                = var.region
+  addresses               = var.ip_address != "" ? [var.ip_address] : null # Only supports 0 or 1 IP address.
+  type                    = "SECURE_WEB_GATEWAY"
+  labels                  = var.labels
+  ports                   = [443] # Gateways of type 'SECURE_WEB_GATEWAY' are limited to 1 port.
+  routing_mode            = var.next_hop_routing_mode ? "NEXT_HOP_ROUTING_MODE" : null
+  scope                   = var.scope != "" ? var.scope : var.region
+  certificate_urls        = var.certificate_urls
+  gateway_security_policy = google_network_security_gateway_security_policy.this.id
+  network                 = var.network
+  subnetwork = (
+    var.subnetwork != "" ? var.subnetwork :
+    try(
+      [
+        for _, s in var.subnets : s.id
+        if s.region == var.region && (s.purpose == "PRIVATE")
+      ][0],
+      ""
+    )
+  )
   delete_swg_autogen_router_on_destroy = var.delete_swg_autogen_router_on_destroy
 }
 
