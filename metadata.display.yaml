@@ -91,6 +91,9 @@ spec:
         service_attachment:
           name: service_attachment
           title: Service Attachment
+        subnets:
+          name: subnets
+          title: Subnets
         subnetwork:
           name: subnetwork
           title: Subnetwork

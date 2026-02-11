@@ -14,6 +14,20 @@
  * limitations under the License.
  */
 
+locals {
+  # Filter var.subnets to find the subnet in the specified region. We look for purpose == "PRIVATE".
+  filtered_swp_subnets = var.subnets != null ? [for _, subnet in var.subnets : subnet.id if subnet.region == var.region && subnet.purpose == "PRIVATE"] : []
+
+  # Get the id of the first matching subnet. If no match, this will be null.
+  derived_swp_subnet_id = length(local.filtered_swp_subnets) > 0 ? local.filtered_swp_subnets[0] : null
+
+  # Determine final subnetwork: prefer explicit var.subnetwork, otherwise derived id.
+  final_subnetwork = var.subnetwork != "" ? var.subnetwork : local.derived_swp_subnet_id
+
+  # Validate and produce an explicit error during plan/apply if no subnetwork is available.
+  validated_swp_subnet = (local.final_subnetwork != null && local.final_subnetwork != "") ? local.final_subnetwork : error("Error: Either 'subnetwork' must be explicitly provided, or a subnetwork with purpose 'PRIVATE' in region '${var.region}' must be present in the 'subnets' map.")
+}
+
 # Network Services Gateway
 resource "google_network_services_gateway" "this" {
   name                                 = var.gateway_name
@@ -29,7 +43,7 @@ resource "google_network_services_gateway" "this" {
   certificate_urls                     = var.certificate_urls
   gateway_security_policy              = google_network_security_gateway_security_policy.this.id
   network                              = var.network
-  subnetwork                           = var.subnetwork
+  subnetwork                           = local.validated_swp_subnet
   delete_swg_autogen_router_on_destroy = var.delete_swg_autogen_router_on_destroy
 }
 
