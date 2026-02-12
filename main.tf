@@ -13,38 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-locals {
-  # 1. We create a list of matching IDs. 
-  # If the VPC module is updating, Terraform will mark this whole list 
-  # as "(known after apply)" instead of evaluating it immediately.
-  eligible_ids = [
-    for s in(var.subnets != null ? var.subnets : {}) : s.id
-    if s.region == var.region && s.purpose == "PRIVATE"
-  ]
-
-  # 2. 'one' returns the first element or null. 
-  # Crucially, it preserves the "Unknown" state during the Plan phase.
-  discovered_id = one(local.eligible_ids)
-
-  # 3. Use the explicit variable if provided, otherwise the discovered ID.
-  final_subnetwork = var.subnetwork != "" ? var.subnetwork : local.discovered_id
-}
 # Network Services Gateway
 resource "google_network_services_gateway" "this" {
-  name                                 = var.gateway_name
-  project                              = var.project_id
-  description                          = var.description
-  location                             = var.region
-  addresses                            = var.ip_address != "" ? [var.ip_address] : null # Only supports 0 or 1 IP address.
-  type                                 = "SECURE_WEB_GATEWAY"
-  labels                               = var.labels
-  ports                                = [443] # Gateways of type 'SECURE_WEB_GATEWAY' are limited to 1 port.
-  routing_mode                         = var.next_hop_routing_mode ? "NEXT_HOP_ROUTING_MODE" : null
-  scope                                = var.scope != "" ? var.scope : var.region
-  certificate_urls                     = var.certificate_urls
-  gateway_security_policy              = google_network_security_gateway_security_policy.this.id
-  network                              = var.network
-  subnetwork                           = local.final_subnetwork
+  name                    = var.gateway_name
+  project                 = var.project_id
+  description             = var.description
+  location                = var.region
+  addresses               = var.ip_address != "" ? [var.ip_address] : null # Only supports 0 or 1 IP address.
+  type                    = "SECURE_WEB_GATEWAY"
+  labels                  = var.labels
+  ports                   = [443] # Gateways of type 'SECURE_WEB_GATEWAY' are limited to 1 port.
+  routing_mode            = var.next_hop_routing_mode ? "NEXT_HOP_ROUTING_MODE" : null
+  scope                   = var.scope != "" ? var.scope : var.region
+  certificate_urls        = var.certificate_urls
+  gateway_security_policy = google_network_security_gateway_security_policy.this.id
+  network                 = var.network
+  subnetwork = (
+    var.subnetwork != "" ? var.subnetwork :
+    try(
+      [
+        for s in var.subnets : s.id
+        if s.region == var.region && (s.purpose == "PRIVATE")
+      ][0],
+      ""
+    )
+  )
   delete_swg_autogen_router_on_destroy = var.delete_swg_autogen_router_on_destroy
   lifecycle {
     ignore_changes = [subnetwork]

@@ -88,7 +88,7 @@ variable "subnetwork" {
 
 variable "subnets" {
   description = "Optional: A map containing subnet details Used to derive the subnetwork URI if subnetwork is not provided."
-  type = map(object({
+  type = list(object({
     id            = string
     name          = optional(string)
     region        = string
@@ -97,7 +97,7 @@ variable "subnets" {
     ip_cidr_range = optional(string)
     network       = optional(string)
   }))
-  default = null
+  default = []
 }
 
 

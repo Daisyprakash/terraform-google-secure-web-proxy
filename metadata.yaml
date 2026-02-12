@@ -24,7 +24,7 @@ spec:
     source:
       repo: https://github.com/GoogleCloudPlatform/terraform-google-secure-web-proxy.git
       sourceType: git
-    version: 0.1.9
+    version: 0.1.10
     actuationTool:
       flavor: Terraform
       version: ">= 1.3.0"
@@ -97,7 +97,7 @@ spec:
       - name: subnets
         description: "Optional: A map containing subnet details Used to derive the subnetwork URI if subnetwork is not provided."
         varType: |-
-          map(object({
+          list(object({
               id            = string
               name          = optional(string)
               region        = string
@@ -106,12 +106,13 @@ spec:
               ip_cidr_range = optional(string)
               network       = optional(string)
             }))
+        defaultValue: []
         connections:
           - source:
               source: github.com/Daisyprakash/terraform-google-network
               version: ">= 15.2.0"
             spec:
-              outputExpr: subnets
+              outputExpr: subnets_list
       - name: delete_swg_autogen_router_on_destroy
         description: boolean option to also delete auto generated router by the gateway creation.
         varType: bool
