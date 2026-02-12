@@ -46,6 +46,9 @@ resource "google_network_services_gateway" "this" {
   network                              = var.network
   subnetwork                           = local.final_subnetwork
   delete_swg_autogen_router_on_destroy = var.delete_swg_autogen_router_on_destroy
+  lifecycle {
+    ignore_changes = [subnetwork]
+  }
 }
 
 # Optional PSC Service Attachment
