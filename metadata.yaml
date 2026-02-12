@@ -24,7 +24,7 @@ spec:
     source:
       repo: https://github.com/GoogleCloudPlatform/terraform-google-secure-web-proxy.git
       sourceType: git
-    version: 0.1.12
+    version: 0.1.13
     actuationTool:
       flavor: Terraform
       version: ">= 1.3.0"
@@ -98,9 +98,9 @@ spec:
         description: "Optional: A map containing subnet details Used to derive the subnetwork URI if subnetwork is not provided."
         varType: |-
           list(object({
-              id                               = string
-              region                           = string
-              purpose                          = string
+              id      = string
+              region  = string
+              purpose = string
             }))
         defaultValue: []
         connections:
