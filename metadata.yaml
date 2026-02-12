@@ -108,7 +108,7 @@ spec:
               source: github.com/Daisyprakash/terraform-google-network
               version: ">= 15.2.0"
             spec:
-              outputExpr: subnets_list
+              outputExpr: subnets_by_region_purpose
       - name: delete_swg_autogen_router_on_destroy
         description: boolean option to also delete auto generated router by the gateway creation.
         varType: bool
