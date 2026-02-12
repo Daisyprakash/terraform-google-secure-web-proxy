@@ -83,22 +83,9 @@ variable "network" {
 variable "subnetwork" {
   type        = string
   description = "URI of the subnetwork for which this secure web proxy will be created. If empty, the module will attempt to find a suitable subnetwork from the `subnets` map."
-  default     = ""
 }
 
-variable "subnets" {
-  description = "Optional: A map containing subnet details Used to derive the subnetwork URI if subnetwork is not provided."
-  type = map(object({
-    id            = string
-    name          = optional(string)
-    region        = string
-    purpose       = string
-    self_link     = optional(string)
-    ip_cidr_range = optional(string)
-    network       = optional(string)
-  }))
-  default = null
-}
+
 
 variable "delete_swg_autogen_router_on_destroy" {
   type        = bool
