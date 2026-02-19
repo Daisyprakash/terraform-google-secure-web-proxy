@@ -24,7 +24,7 @@ spec:
     source:
       repo: https://github.com/GoogleCloudPlatform/terraform-google-secure-web-proxy.git
       sourceType: git
-    version: 1.0.9
+    version: 1.0.10
     actuationTool:
       flavor: Terraform
       version: ">= 1.3.0"
@@ -164,7 +164,7 @@ spec:
               name        = string
               description = optional(string)
               labels      = optional(map(string))
-              allow_open  = optional(bool, false)
+              allow_open  = optional(bool, true)
 
               # Defines server identity (public/private keys)
               server_certificate = optional(object({

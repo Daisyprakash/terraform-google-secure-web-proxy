@@ -150,7 +150,7 @@ variable "server_tls_policy_config" {
     name        = string
     description = optional(string)
     labels      = optional(map(string))
-    allow_open  = optional(bool, false)
+    allow_open  = optional(bool, true)
 
     # Defines server identity (public/private keys)
     server_certificate = optional(object({
