@@ -29,6 +29,7 @@ resource "google_network_services_gateway" "this" {
   certificate_urls        = var.certificate_urls
   gateway_security_policy = google_network_security_gateway_security_policy.this.id
   network                 = var.network
+  server_tls_policy       = var.server_tls_policy
   subnetwork = (
     var.subnetwork != "" ? var.subnetwork :
     try(

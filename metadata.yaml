@@ -24,7 +24,7 @@ spec:
     source:
       repo: https://github.com/GoogleCloudPlatform/terraform-google-secure-web-proxy.git
       sourceType: git
-    version: 0.1.1
+    version: 1.0.7
     actuationTool:
       flavor: Terraform
       version: ">= 1.3.0"
@@ -157,6 +157,10 @@ spec:
               values      = list(string)
             }))
         defaultValue: {}
+      - name: server_tls_policy
+        description: Self link of you sever tls policy that will be attached to swp
+        varType: string
+        defaultValue: ""
     outputs:
       - name: gateway_id
         description: Identifier for the secure web proxy gateway.

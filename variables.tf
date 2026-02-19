@@ -142,3 +142,10 @@ variable "url_lists" {
   default     = {}
   description = "URL lists that can be used within SWP rules. Attribute values supports: FQDNs and URLs."
 }
+
+
+variable "server_tls_policy" {
+  type        = string
+  description = "Self link of you sever tls policy that will be attached to swp"
+  default     = ""
+}
