@@ -149,8 +149,6 @@ variable "server_tls_policy_config" {
   type = object({
     name        = string
     description = optional(string)
-    location    = optional(string, "global")
-    project     = optional(string)
     labels      = optional(map(string))
     allow_open  = optional(bool, false)
 
