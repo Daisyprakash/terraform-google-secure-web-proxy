@@ -144,8 +144,39 @@ variable "url_lists" {
 }
 
 
-variable "server_tls_policy" {
-  type        = string
-  description = "Self link of you sever tls policy that will be attached to swp"
-  default     = ""
+variable "server_tls_policy_config" {
+  description = "Configuration for the Server TLS Policy. Defines how the server authenticates incoming requests."
+  type = object({
+    name        = string
+    description = optional(string)
+    location    = optional(string, "global")
+    project     = optional(string)
+    labels      = optional(map(string))
+    allow_open  = optional(bool, false)
+
+    # Defines server identity (public/private keys)
+    server_certificate = optional(object({
+      grpc_endpoint = optional(object({
+        target_uri = string
+      }))
+      certificate_provider_instance = optional(object({
+        plugin_instance = string
+      }))
+    }))
+
+    # Defines Mutual TLS (mTLS) and peer validation
+    mtls_policy = optional(object({
+      client_validation_mode         = optional(string)
+      client_validation_trust_config = optional(string)
+      client_validation_ca = optional(object({
+        grpc_endpoint = optional(object({
+          target_uri = string
+        }))
+        certificate_provider_instance = optional(object({
+          plugin_instance = string
+        }))
+      }))
+    }))
+  })
+  default = null
 }

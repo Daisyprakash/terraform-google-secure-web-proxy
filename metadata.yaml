@@ -24,7 +24,7 @@ spec:
     source:
       repo: https://github.com/GoogleCloudPlatform/terraform-google-secure-web-proxy.git
       sourceType: git
-    version: 1.0.7
+    version: 1.0.8
     actuationTool:
       flavor: Terraform
       version: ">= 1.3.0"
@@ -157,10 +157,41 @@ spec:
               values      = list(string)
             }))
         defaultValue: {}
-      - name: server_tls_policy
-        description: Self link of you sever tls policy that will be attached to swp
-        varType: string
-        defaultValue: ""
+      - name: server_tls_policy_config
+        description: Configuration for the Server TLS Policy. Defines how the server authenticates incoming requests.
+        varType: |-
+          object({
+              name        = string
+              description = optional(string)
+              location    = optional(string, "global")
+              project     = optional(string)
+              labels      = optional(map(string))
+              allow_open  = optional(bool, false)
+
+              # Defines server identity (public/private keys)
+              server_certificate = optional(object({
+                grpc_endpoint = optional(object({
+                  target_uri = string
+                }))
+                certificate_provider_instance = optional(object({
+                  plugin_instance = string
+                }))
+              }))
+
+              # Defines Mutual TLS (mTLS) and peer validation
+              mtls_policy = optional(object({
+                client_validation_mode         = optional(string)
+                client_validation_trust_config = optional(string)
+                client_validation_ca = optional(object({
+                  grpc_endpoint = optional(object({
+                    target_uri = string
+                  }))
+                  certificate_provider_instance = optional(object({
+                    plugin_instance = string
+                  }))
+                }))
+              }))
+            })
     outputs:
       - name: gateway_id
         description: Identifier for the secure web proxy gateway.
@@ -189,6 +220,9 @@ spec:
           - {}
       - name: self_link
         description: The URI of the created resource.
+        type: string
+      - name: server_tls_policy_id
+        description: The unique identifier of the Server TLS Policy.
         type: string
       - name: service_attachment_id
         description: ID of the service attachment resource, if created.

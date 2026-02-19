@@ -68,3 +68,8 @@ output "ports" {
   description = "Ports of the secure web proxy resource created."
   value       = google_network_services_gateway.this.ports
 }
+
+output "server_tls_policy_id" {
+  description = "The unique identifier of the Server TLS Policy."
+  value       = try(google_network_security_server_tls_policy.this[0].id, null)
+}
