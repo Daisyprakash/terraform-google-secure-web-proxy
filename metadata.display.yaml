@@ -30,6 +30,9 @@ spec:
         certificate_urls:
           name: certificate_urls
           title: Certificate Urls
+        consumer_accept_list_optional:
+          name: consumer_accept_list_optional
+          title: Consumer Accept List Optional
         delete_swg_autogen_router_on_destroy:
           name: delete_swg_autogen_router_on_destroy
           title: Delete Swg Autogen Router On Destroy

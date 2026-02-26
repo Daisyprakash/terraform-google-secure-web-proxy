@@ -65,7 +65,7 @@ variable "service_attachment" {
     name                             = string
     nat_subnets                      = optional(list(string))
     automatic_accept_all_connections = optional(bool)
-    consumer_accept_lists            = optional(map(string), {})
+    consumer_accept_lists            = optional(map(number), {})
     consumer_reject_lists            = optional(list(string))
     description                      = optional(string)
     domain_name                      = optional(string)
@@ -141,4 +141,10 @@ variable "url_lists" {
   }))
   default     = {}
   description = "URL lists that can be used within SWP rules. Attribute values supports: FQDNs and URLs."
+}
+
+variable "consumer_accept_list_optional" {
+  description = "JSON string of consumer accept lists; used as a fallback for PSC-SA."
+  type        = string
+  default     = null
 }

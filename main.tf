@@ -68,7 +68,11 @@ resource "google_compute_service_attachment" "default" {
   enable_proxy_protocol = coalesce(var.service_attachment.enable_proxy_protocol, false)
   reconcile_connections = coalesce(var.service_attachment.reconcile_connections, false)
   dynamic "consumer_accept_lists" {
-    for_each = var.service_attachment.consumer_accept_lists
+    for_each = (
+      length(var.service_attachment.consumer_accept_lists) > 0
+      ? var.service_attachment.consumer_accept_lists
+      : (var.consumer_accept_list_optional != null ? jsondecode(var.consumer_accept_list_optional) : {})
+    )
     iterator = accept
     content {
       project_id_or_num = accept.key
