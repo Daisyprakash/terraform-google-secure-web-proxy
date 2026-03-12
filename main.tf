@@ -42,7 +42,7 @@ resource "google_network_services_gateway" "this" {
       ""
     )
   )
-  server_tls_policy = var.server_tls_policy_config != null ? google_network_security_server_tls_policy.this[0].id : null
+  server_tls_policy                    = var.server_tls_policy_config != null ? google_network_security_server_tls_policy.this[0].id : null
   delete_swg_autogen_router_on_destroy = var.delete_swg_autogen_router_on_destroy
   depends_on                           = [google_certificate_manager_certificate.this]
 }
