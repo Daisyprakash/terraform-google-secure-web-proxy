@@ -91,6 +91,9 @@ spec:
         scope:
           name: scope
           title: Scope
+        server_tls_policy_config:
+          name: server_tls_policy_config
+          title: Server Tls Policy Config
         service_attachment:
           name: service_attachment
           title: Service Attachment
